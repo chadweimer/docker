@@ -12,10 +12,9 @@ script:
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   - docker build --build-arg IMAGE=arm32v7/python:3.7-alpine -t cwmr/speedtest-cli:arm .
   # push image
-  - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
   - >
     if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
       docker push cwmr/speedtest-cli:amd64
       docker push cwmr/speedtest-cli:arm
-      docker run --rm mplatform/manifest-tool push from-args --platforms linux/amd64,linux/arm --template cwmr/speedtest-cli:ARCH --target cwmr/speedtest-cli:latest
+      docker run --rm mplatform/manifest-tool --username $DOCKER_USER --password $DOCKER_PASS push from-args --platforms linux/amd64,linux/arm --template cwmr/speedtest-cli:ARCH --target cwmr/speedtest-cli:latest
     fi
